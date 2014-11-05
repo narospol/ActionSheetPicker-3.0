@@ -86,10 +86,10 @@
 
     // Allow the delegate to override and set additional configs
     //to backward compatibility:
-    if ( [_delegate respondsToSelector:@selector(actionSheetPicker:configurePickerView:)] )
-    {
-        [_delegate actionSheetPicker:self configurePickerView:pv];
+    if ([_delegate respondsToSelector:@selector(configurePickerView:)]) {
+        [_delegate configurePickerView:pv];
     }
+
     self.pickerView = pv;
     return pv;
 }

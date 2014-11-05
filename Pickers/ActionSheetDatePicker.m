@@ -98,13 +98,14 @@
     CGRect datePickerFrame = CGRectMake(0, 40, self.viewSize.width, 216);
     UIDatePicker *datePicker = [[UIDatePicker alloc] initWithFrame:datePickerFrame];
     datePicker.datePickerMode = self.datePickerMode;
+    /*
     datePicker.maximumDate = self.maximumDate;
     datePicker.minimumDate = self.minimumDate;
     datePicker.minuteInterval = self.minuteInterval;
     datePicker.calendar = self.calendar;
     datePicker.timeZone = self.timeZone;
     datePicker.locale = self.locale;
-    
+    */
     // if datepicker is set with a date in countDownMode then
     // 1h is added to the initial countdown
     if (self.datePickerMode == UIDatePickerModeCountDownTimer) {
@@ -140,6 +141,7 @@
             
         } else {
             [target performSelector:action withObject:self.selectedDate withObject:origin];
+            //objc_msgSend(target, action, self.selectedDate, origin);
         }
 #pragma clang diagnostic pop
     else

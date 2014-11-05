@@ -386,7 +386,13 @@ CG_INLINE BOOL isIPhone4()
 
     if ( !self.hideCancel )
     {
-        [barItems addObject:self.cancelBarButtonItem];
+        UIBarButtonItem *cancelBtn;
+        if(self.cancelTitle){
+            cancelBtn = [self createCustomCancelButtonWithTitle:self.cancelTitle target:self action:@selector(actionPickerCancel:)];
+        } else {
+            cancelBtn = [self createButtonWithType:UIBarButtonSystemItemCancel target:self action:@selector(actionPickerCancel:)];
+        }
+        [barItems addObject:cancelBtn];
     }
 
     NSInteger index = 0;
@@ -425,7 +431,15 @@ CG_INLINE BOOL isIPhone4()
         [barItems addObject:labelButton];
         [barItems addObject:flexSpace];
     }
-    [barItems addObject:self.doneBarButtonItem];
+    
+    UIBarButtonItem *doneButton;
+    if(self.doneTitle){
+        doneButton = [self createCustomDoneButtonWithTitle:self.doneTitle target:self action:@selector(actionPickerDone:)];
+    } else {
+        doneButton = [self createButtonWithType:UIBarButtonSystemItemDone target:self action:@selector(actionPickerDone:)];
+    }
+    
+    [barItems addObject:doneButton];
 
     [pickerToolbar setItems:barItems animated:NO];
     return pickerToolbar;
@@ -488,6 +502,16 @@ CG_INLINE BOOL isIPhone4()
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:type target:target
                                                                                action:buttonAction];
     return barButton;
+}
+
+- (UIBarButtonItem *)createCustomCancelButtonWithTitle:(NSString *) title target:(id)target action:(SEL)buttonAction
+{
+    return [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleBordered target:target action:buttonAction];
+}
+
+- (UIBarButtonItem *)createCustomDoneButtonWithTitle:(NSString *) title target:(id)target action:(SEL)buttonAction
+{
+    return [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleDone target:target action:buttonAction];
 }
 
 #pragma mark - Utilities and Accessors
@@ -651,6 +675,12 @@ CG_INLINE BOOL isIPhone4()
     [self notifyTarget:self.target didCancelWithAction:self.cancelAction origin:[self storedOrigin]];
 }
 
+
+- (void) actionPickerTapped
+{
+    [self notifyTarget:self.target didSucceedWithAction:self.successAction origin:[self storedOrigin]];
+    [self dismissPicker];
+}
 
 @end
 

@@ -27,7 +27,7 @@
 
 #import "ActionSheetStringPicker.h"
 
-@interface ActionSheetStringPicker()
+@interface ActionSheetStringPicker()<UIGestureRecognizerDelegate>
 @property (nonatomic,strong) NSArray *data;
 @property (nonatomic,assign) NSInteger selectedIndex;
 @end
@@ -65,6 +65,22 @@
     return self;
 }
 
+-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
+-(void)pickerTapped:(UITapGestureRecognizer*)gestureRecognizer
+{
+    CGPoint location = [gestureRecognizer locationInView:self.pickerView];
+    CGFloat halfViewHeight = self.pickerView.frame.size.height / 2;
+    NSInteger rowHeight = 22;
+    
+    if (location.y < halfViewHeight + rowHeight && location.y > halfViewHeight - rowHeight)
+    {
+        [self actionPickerTapped];
+    }
+}
 
 - (UIView *)configuredPickerView {
     if (!self.data)
@@ -73,14 +89,13 @@
     UIPickerView *stringPicker = [[UIPickerView alloc] initWithFrame:pickerFrame];
     stringPicker.delegate = self;
     stringPicker.dataSource = self;
+    stringPicker.showsSelectionIndicator = YES;
     [stringPicker selectRow:self.selectedIndex inComponent:0 animated:NO];
-    if (self.data.count == 0) {
-        stringPicker.showsSelectionIndicator = NO;
-        stringPicker.userInteractionEnabled = NO;
-    } else {
-        stringPicker.showsSelectionIndicator = YES;
-        stringPicker.userInteractionEnabled = YES;
-    }
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickerTapped:)];
+    tapGesture.delegate = self;
+    
+    [stringPicker addGestureRecognizer:tapGesture];
     
     //need to keep a reference to the picker so we can clear the DataSource / Delegate when dismissing
     self.pickerView = stringPicker;
@@ -132,23 +147,32 @@
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    id obj = (self.data)[(NSUInteger) row];
-
-    // return the object if it is already a NSString,
-    // otherwise, return the description, just like the toString() method in Java
-    // else, return nil to prevent exception
-
-    if ([obj isKindOfClass:[NSString class]])
-        return obj;
-
-    if ([obj respondsToSelector:@selector(description)])
-        return [obj performSelector:@selector(description)];
-
-    return nil;
+    return [self.data objectAtIndex:row];
+}
+static CGFloat offset = 15;
+- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
+    return pickerView.frame.size.width - offset * 2;
 }
 
-- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
-    return pickerView.frame.size.width - 30;
+- (void)reloadAllComponents
+{
+    [self.pickerView reloadInputViews];
+}
+
+-(UIView *) pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+{
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(offset, 0, self.viewSize.width - 2*offset, 20)];
+    
+    label.text = self.data[row];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont fontWithName:@"Arial" size:15];
+    //label.adjustsLetterSpacingToFitWidth = YES;
+    label.numberOfLines = 0;
+    label.backgroundColor = [UIColor clearColor];
+    
+    [label sizeToFit];
+    
+    return label;
 }
 
 @end

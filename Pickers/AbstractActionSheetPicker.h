@@ -65,6 +65,9 @@ static NSString *const kActionTarget  = @"buttonActionTarget";
 @property (nonatomic) NSAttributedString *attributedTitle; // default is nil. If titleTextAttributes not nil this value ignorred.
 @property (nonatomic, retain) Class popoverBackgroundViewClass; //allow popover customization on iPad
 
+@property (nonatomic, strong) NSString *cancelTitle;
+@property (nonatomic, strong) NSString *doneTitle;
+
     // For subclasses.
 - (id)initWithTarget:(id)target successAction:(SEL)successAction cancelAction:(SEL)cancelActionOrNil origin:(id)origin;
 
@@ -100,5 +103,7 @@ static NSString *const kActionTarget  = @"buttonActionTarget";
 
     // Hide picker programmatically
 - (void) hidePickerWithCancelAction;
+
+- (void) actionPickerTapped;
 
 @end
