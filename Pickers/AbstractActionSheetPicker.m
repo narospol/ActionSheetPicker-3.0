@@ -380,7 +380,7 @@ CG_INLINE BOOL isIPhone4()
 {
     CGRect frame = CGRectMake(0, 0, self.viewSize.width, 44);
     UIToolbar *pickerToolbar = [[UIToolbar alloc] initWithFrame:frame];
-    pickerToolbar.barStyle = (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) ? UIBarStyleDefault : UIBarStyleBlackTranslucent;
+    pickerToolbar.barStyle = (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) ? UIBarStyleBlackOpaque : UIBarStyleBlackTranslucent;
 
     NSMutableArray *barItems = [[NSMutableArray alloc] init];
 
@@ -466,7 +466,8 @@ CG_INLINE BOOL isIPhone4()
     }
     else
     {
-        [toolBarItemLabel setTextColor:(NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) ? [UIColor blackColor] : [UIColor whiteColor]];
+        //[toolBarItemLabel setTextColor:(NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) ? [UIColor blackColor] : [UIColor whiteColor]];
+        [toolBarItemLabel setTextColor:[UIColor blackColor]];
         [toolBarItemLabel setFont:[UIFont boldSystemFontOfSize:16]];
         toolBarItemLabel.text = aTitle;
 
